@@ -1,0 +1,2 @@
+# Ignore Docker data directories
+*/docker_data/*
