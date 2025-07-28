@@ -15,6 +15,9 @@ The pip version was 24.3.1
 ## Question 2. Understanding Docker networking and docker-compose
 Given the following `docker-compose.yaml`, what is the `hostname` and `port` that **pgadmin** should use to connect to the postgres database?
 
+### Answer
+I ran `docker compose up -d` with the `docker-compose.yaml` file as below. Then, I logged into pgadmin with: `docker exec -it m01_homework-pg-admin-1 bash`, and tested connectivity with `nc`. It showed that both, `db:5432` and `pg-database:5432`, were open.
+
 ```yaml
 services:
   db:
@@ -47,9 +50,6 @@ volumes:
     name: vol-pgadmin_data
 ```
 
-### Answer
-When using docker composer it creates a network so you should use container ports, and the name of postgres host, i.e. `db:5432`.
-
 
 ## Prepare Postgres
 I used my files from week1/docker_sql, where I:
@@ -69,13 +69,7 @@ During the period of October 1st 2019 (inclusive) and November 1st 2019 (exclusi
 5. Over 10 miles
 
 ### Answer
-I got an answer of 
-104830
-198995
-109642
-27686
-35201.
-Probably due the different number of rows in the file as my file got 476_386. Below is the query.
+I got an answer of 104,802; 198,924; 109,603; 27,678; 35,189.
 
 ```sql
 SELECT 
@@ -93,6 +87,10 @@ WHERE
 		lpep_pickup_datetime >= '2019-10-01'
 	AND
 		lpep_pickup_datetime < '2019-11-01'
+	AND
+		lpep_dropoff_datetime >= '2019-10-01'
+	AND
+		lpep_dropoff_datetime < '2019-11-01'
 GROUP BY
 	distance_bucket
 ORDER BY
@@ -123,6 +121,7 @@ GROUP BY
 	"day"
 ORDER BY
 	max_distance DESC
+LIMIT 1
 ```
 
 ## Question 5. Three biggest pickup zones
@@ -155,7 +154,7 @@ ORDER BY
 For the passengers picked up in October 2019 in the zone named "East Harlem North" which was the drop off zone that had the largest tip?
 
 ### Answer.
-The answer is JFK Airport, maximum tip was 87.3
+The answer is JFK Airport, maximum tip was 87.3. However, my SQL query could've been much simpler.
 
 ```sql
 SELECT 
