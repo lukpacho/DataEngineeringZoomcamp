@@ -1,0 +1,45 @@
+id: run_bulk_postgres_taxi
+namespace: zoomcamp
+
+inputs:
+  - id: taxi
+    type: ARRAY
+    itemType: STRING
+    defaults: ["yellow", "green"]
+
+  - id: year
+    type: ARRAY
+    itemType: STRING
+    defaults: ["2020", "2021"]
+
+  - id: month
+    type: ARRAY
+    itemType: STRING
+    defaults: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+
+
+tasks:
+  - id: loop_taxi
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ inputs.taxi }}"
+    tasks:
+      - id: loop_year
+        type: io.kestra.plugin.core.flow.ForEach
+        values: "{{ inputs.year }}"
+        tasks:
+          - id: loop_month
+            type: io.kestra.plugin.core.flow.ForEach
+            values: "{{ inputs.month }}"
+            concurrencyLimit: 1
+            tasks:
+              - id: process_taxi_month
+                type: io.kestra.plugin.core.flow.Subflow
+                flowId: process_taxi_month
+                namespace: zoomcamp
+                inputs: 
+                  taxi: "{{ parents[1].taskrun.value }}"
+                  year: "{{ parents[0].taskrun.value }}"
+                  month: "{{ taskrun.value }}"
+
+
+
