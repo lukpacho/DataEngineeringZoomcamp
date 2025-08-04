@@ -1,6 +1,18 @@
 # Ignore Docker data directories
 */docker_data/*
 
+# --- Airflow / project secrets ---
+.env
+*/.env
+keys/
+*/keys/*
+*/logs/*
+
+
+# Python cache files
+__pycache__/
+*/__pycache__/*
+
 # .terraform (provider binaries, external module source code, …)
 **/.terraform/*
 # state files
