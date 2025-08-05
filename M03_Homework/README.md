@@ -39,15 +39,13 @@ For troubleshooting the buckets I logged in to gcloud and used `gsutil`.
 gcloud auth login
 ```
 
-
-
 ## Question 1:
 
 Question 1: What is count of records for the 2024 Yellow Taxi Data?
 
 - 65,623
 - 840,402
-- 20,332,093
+**- 20,332,093**
 - 85,431,289
 
 ## Question 2:
@@ -56,7 +54,7 @@ Write a query to count the distinct number of PULocationIDs for the entire datas
 What is the **estimated amount** of data that will be read when this query is executed on the External Table and the Table?
 
 - 18.82 MB for the External Table and 47.60 MB for the Materialized Table
-- 0 MB for the External Table and 155.12 MB for the Materialized Table
+**- 0 MB for the External Table and 155.12 MB for the Materialized Table**
 - 2.14 GB for the External Table and 0MB for the Materialized Table
 - 0 MB for the External Table and 0MB for the Materialized Table
 
@@ -64,7 +62,7 @@ What is the **estimated amount** of data that will be read when this query is 
 
 Write a query to retrieve the PULocationID from the table (not the external table) in BigQuery. Now write a query to retrieve the PULocationID and DOLocationID on the same table. Why are the estimated number of Bytes different?
 
-- BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.
+**- BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.**
 - BigQuery duplicates data across multiple storage partitions, so selecting two columns instead of one requires scanning the table twice, doubling the estimated bytes processed.
 - BigQuery automatically caches the first queried column, so adding a second column increases processing time but does not affect the estimated bytes scanned.
 - When selecting multiple columns, BigQuery performs an implicit join operation between them, increasing the estimated bytes processed
@@ -76,13 +74,13 @@ How many records have a fare_amount of 0?
 - 128,210
 - 546,578
 - 20,188,016
-- 8,333
+**- 8,333**
 
 ## Question 5:
 
 What is the best strategy to make an optimized table in Big Query if your query will always filter based on tpep_dropoff_datetime and order the results by VendorID (Create a new table with this strategy)
 
-- Partition by tpep_dropoff_datetime and Cluster on VendorID
+**- Partition by tpep_dropoff_datetime and Cluster on VendorID**
 - Cluster on by tpep_dropoff_datetime and Cluster on VendorID
 - Cluster on tpep_dropoff_datetime Partition by VendorID
 - Partition by tpep_dropoff_datetime and Partition by VendorID
@@ -96,7 +94,7 @@ Use the materialized table you created earlier in your from clause and note the 
 Choose the answer which most closely matches.  
 
 - 12.47 MB for non-partitioned table and 326.42 MB for the partitioned table
-- 310.24 MB for non-partitioned table and 26.84 MB for the partitioned table
+**- 310.24 MB for non-partitioned table and 26.84 MB for the partitioned table**
 - 5.87 MB for non-partitioned table and 0 MB for the partitioned table
 - 310.31 MB for non-partitioned table and 285.64 MB for the partitioned table
 
@@ -106,7 +104,7 @@ Where is the data stored in the External Table you created?
 
 - Big Query
 - Container Registry
-- GCP Bucket
+**- GCP Bucket**
 - Big Table
 
 ## Question 8:
@@ -114,8 +112,66 @@ Where is the data stored in the External Table you created?
 It is best practice in Big Query to always cluster your data:
 
 - True
-- False
+**- False**
 
 ## (Bonus: Not worth points) Question 9:
 
 No Points: Write a `SELECT count(*)` query FROM the materialized table you created. How many bytes does it estimate will be read? Why?
+
+It's 0 MB. It's because this information is in metadata.
+
+
+
+### BigQueries
+```sql
+-- Creating external table referring to gcs path
+CREATE OR REPLACE EXTERNAL TABLE `dtc-de-course-466908.zoomcamp_m03.external_yellow_tripdata_2024_h1`
+OPTIONS (
+  format = 'PARQUET',
+  uris = ['gs://dtc-de-course-466908-m03-bucket/yellow_tripdata_2024-*.parquet']
+);
+
+-- Creating materialized table referring to gcs path
+LOAD DATA OVERWRITE zoomcamp_m03.materialized_yellow_tripdata_2024_h1
+FROM FILES (
+  format = 'PARQUET',
+  uris = ['gs://dtc-de-course-466908-m03-bucket/yellow_tripdata_2024-*.parquet']
+);
+
+-- Alternative for loading materialized
+-- CREATE OR REPLACE TABLE zoomcamp_m03.materialized_yellow_tripdata_2024_h1
+-- SELECT * FROM zoomcamp_m03.external_yellow_tripdata_2024_h1
+
+-- Count the records
+SELECT COUNT(*) FROM zoomcamp_m03.external_yellow_tripdata_2024_h1;
+SELECT COUNT(*) FROM zoomcamp_m03.materialized_yellow_tripdata_2024_h1;
+
+-- Count the distinct number of PULicationIDs
+SELECT COUNT(DISTINCT(PULocationID)) FROM zoomcamp_m03.external_yellow_tripdata_2024_h1;  -- 0 MB
+SELECT COUNT(DISTINCT(PULocationID)) FROM zoomcamp_m03.materialized_yellow_tripdata_2024_h1;  -- 155.12 MB
+
+-- Retrive PULocationID, and PULocationID with DOLocationID
+SELECT PULocationID FROM zoomcamp_m03.materialized_yellow_tripdata_2024_h1;  -- 155.12 MB
+SELECT PULocationID, DOLocationID FROM zoomcamp_m03.materialized_yellow_tripdata_2024_h1;  -- 310.24 MB
+
+-- Count fare_amount of 0
+SELECT COUNT(fare_amount) FROM zoomcamp_m03.external_yellow_tripdata_2024_h1
+WHERE fare_amount = 0;
+
+-- Create a partitioned table of tpep_dropoff_datetime column and clustered by VendorID 
+CREATE OR REPLACE TABLE zoomcamp_m03.yellow_tripdata_partitioned_clustered
+PARTITION BY DATE(tpep_dropoff_datetime)
+CLUSTER BY VendorID AS
+SELECT * FROM `dtc-de-course-466908.zoomcamp_m03.external_yellow_tripdata_2024_h1`
+
+-- Query to retrieve distinct VendorIDs betwen dropoff 2024-03-01 and 2024-03-15 (inclusive)
+SELECT DISTINCT(VendorID) FROM zoomcamp_m03.yellow_tripdata_partitioned_clustered
+WHERE tpep_dropoff_datetime >= '2024-03-1' AND tpep_dropoff_datetime <= '2024-03-15';
+-- Same query but the table not partinioned nor clustered
+SELECT DISTINCT(VendorID) FROM zoomcamp_m03.materialized_yellow_tripdata_2024_h1
+WHERE tpep_dropoff_datetime >= '2024-03-1' AND tpep_dropoff_datetime <= '2024-03-15';
+
+--
+SELECT COUNT(*) FROM zoomcamp_m03.materialized_yellow_tripdata_2024_h1
+
+```

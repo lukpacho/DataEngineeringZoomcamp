@@ -18,3 +18,9 @@
 {"timestamp":"2025-08-04T15:01:35.353378","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
 {"timestamp":"2025-08-04T15:02:06.015096","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
 {"timestamp":"2025-08-04T15:02:36.690179","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-08-04T15:03:07.479311","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-08-04T15:03:38.218358","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-08-04T15:04:08.913421","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-08-04T15:04:39.622772","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-08-04T15:05:10.329118","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-08-04T15:05:41.066235","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/gcs_ingest_taxi.py","logger":"airflow.models.dagbag.DagBag"}

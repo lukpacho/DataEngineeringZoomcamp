@@ -7,7 +7,8 @@
 keys/
 */keys/*
 */logs/*
-
+*/plugins/*
+*/config/*
 
 # Python cache files
 __pycache__/
