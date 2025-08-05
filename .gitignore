@@ -5,10 +5,10 @@
 .env
 */.env
 keys/
-*/keys/*
-*/logs/*
-*/plugins/*
-*/config/*
+*/keys
+*/logs
+*/plugins
+*/config
 
 # Python cache files
 __pycache__/
